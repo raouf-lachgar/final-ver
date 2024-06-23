@@ -1,0 +1,78 @@
+{% load static %}
+<html>
+<head>
+    <title>Product Submission</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .product {
+            border: 1px solid #ccc;
+            padding: 16px;
+            margin: 16px;
+            width: calc(33.333% - 32px);
+            box-sizing: border-box;
+        }
+        nav a {
+            margin-right: 15px;
+        }
+        body{
+            height: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <link href="{% static 'css/home.css' %}" rel="stylesheet">
+    <link href="{% static 'css/filter.css' %}" rel="stylesheet">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">MySite</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/submit_product/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'submit_product' %}">Submit Product</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/profile/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+                <!-- Search form -->
+                <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'index' %}">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                    <select name="location" class="form-control mr-sm-2">
+                        <option value="">All Wilayas</option>
+                        {% for wilaya in wilayas %}
+                            <option value="{{ wilaya.name }}">{{ wilaya.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input class="form-control mr-sm-2" type="number" placeholder="Min Price" name="min_price">
+                    <input class="form-control mr-sm-2" type="number" placeholder="Max Price" name="max_price">
+                    <button type="submit" class="btn btn-outline-success my-2 my-sm-0" name="order_sales">Order by Sales</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <main class="container mt-5">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/filter.js' %}"></script>
+</body>
+</html>

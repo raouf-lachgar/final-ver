@@ -1,0 +1,47 @@
+{% extends "users/layout.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+<h2>Filter Product</h2>
+<div class="vertical-form">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<h2>All Offers</h2>
+<div class="products">
+    <form method="get">
+        <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+        <input type="text" name="location" placeholder="Location..." value="{{ request.GET.location }}">
+        <input type="number" name="min_price" placeholder="Min Price..." value="{{ request.GET.min_price }}">
+        <input type="number" name="max_price" placeholder="Max Price..." value="{{ request.GET.max_price }}">
+        <button type="submit">Search</button>
+    </form>
+    {% if products %}
+        {% for product in products %}
+        <div class="product">
+            <div class="card-img">
+                <img src="{{ product.media_files_set.first.path.url }}" alt="">
+            </div>
+            <hr class="dropdown-divider">
+            <h3><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+            <p>Price: ${{ product.price }}</p>
+            <p>City: {{ product.city }}</p>
+            <p>Sales: {{ product.sales }}</p>
+            <form method="POST" action="{% url 'buy_product' product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" {% if product.quantity == 0 %}disabled{% endif %}>Buy</button>
+            </form>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No products found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+.filter{
+    display:none;
+    position: absolute;
+    height: 20vw;
+    width: 40vw;
+    margin-top: 6vw;
+    padding: 3vw;
+    background-color: white;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+    border-radius: 12px;
+  }
+  .wilaya_price{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+
+  }
+  .wilaya_price input{
+    width: 5vw;
+    margin-right: 2vw;
+  }
+  .wilaya_price select{
+    width: 2vw;
+  }
+  .wilaya_price h6{
+    margin-top: .8vw;
+    margin-right: 2vw;
+   display: inline;
+  }
+  .apply {
+    padding: .5vw .5vw;
+    font-size: 1.2vw;
+    height: 3vw;
+    width: 7vw;
+    margin-top: 0vw;
+    margin-left: 50vw;
+    font-weight: 500;
+    color: #00000041;
+    background-color: #fff;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    outline: none;
+  }
+  
+  .apply:hover {
+    background-color: #23c483;
+    box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+  
+  .apply:active {
+    transform: translateY(-1px);
+  }
