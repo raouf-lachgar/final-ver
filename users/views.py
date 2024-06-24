@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 #no longer predifined djnago user ;)
-from .models import Product,custom_user,media_files,Wilaya,Rating,Comment
+from .models import Product,custom_user,media_files,Wilaya,Rating,Comment,car_model,car_serie,piece
 from .forms import ProductForm, RatingForm
 from .filterForm import ProductFilter
 #external db for willayas
@@ -19,34 +19,36 @@ from .filterForm import ProductFilter
 def index(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
-    form = ProductFilter()
-    products = Product.objects.prefetch_related('media_files_set').all()
 
-    if request.method == "POST":
-        form = ProductFilter(request.POST)
-        if form.is_valid():
-            query = form.cleaned_data
-            products = products.filter(
-                car_model=query['car_model'],
-                car_serie=query['car_serie'],
-                piece=query['piece']
-            )
+    wilayas = Wilaya.objects.all()
+    car_models = car_model.objects.all()
+    car_series = car_serie.objects.all()
+    car_pieces = piece.objects.all()
 
-    # Handle search query parameters
-    query = request.GET.get('q')
-    city = request.GET.get('location')
+    car_model_name = request.GET.get('car_model')
+    car_series_name = request.GET.get('car_series')
+    piece_name = request.GET.get('piece')
+    wilaya_id = request.GET.get('wilaya')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
 
-    if query:
-        products = products.filter(name__icontains=query)
-    
-    if city:
-        products = products.filter(city__name=city)
+    products = Product.objects.prefetch_related('media_files_set').all()
+
+    if car_model_name:
+        products = products.filter(car_model=car_model_name)
+
+    if car_series_name:
+        products = products.filter(car_serie=car_series_name)
+
+    if piece_name:
+        products = products.filter(piece=piece_name)
+
+    if wilaya_id:
+        products = products.filter(city_id=wilaya_id)
 
     if min_price:
         products = products.filter(price__gte=min_price)
-    
+
     if max_price:
         products = products.filter(price__lte=max_price)
 
@@ -57,13 +59,16 @@ def index(request):
         else:
             products = products.order_by('sales')
 
-    wilayas = Wilaya.objects.all()
     context = {
-        'form': form,
         'products': products,
-        'wilayas': wilayas
+        'wilayas': wilayas,
+        'car_models': car_models,
+        'car_series': car_series,
+        'car_pieces': car_pieces,
     }
     return render(request, 'users/user.html', context)
+
+
 
 
 def profile_view(request):

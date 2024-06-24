@@ -3,26 +3,44 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 
-<h2>Filter Product</h2>
-<div class="vertical-form">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ form.as_p }}
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</div>
+<h2>Filter Products</h2>
+<form method="get" action="{% url 'index' %}">
+    <select name="car_model">
+        <option value="">All Car Models</option>
+        {% for car_model in car_models %}
+            <option value="{{ car_model.name }}">{{ car_model.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="car_series">
+        <option value="">All Car Series</option>
+        {% for car_series in car_series %}
+            <option value="{{ car_series.name }}">{{ car_series.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="piece">
+        <option value="">All Pieces</option>
+        {% for piece in car_pieces %}
+            <option value="{{ piece.name }}">{{ piece.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="wilaya">
+        <option value="">All Wilayas</option>
+        {% for wilaya in wilayas %}
+            <option value="{{ wilaya.id }}">{{ wilaya.name }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="number" name="min_price" placeholder="Min Price">
+    <input type="number" name="max_price" placeholder="Max Price">
+
+    <button type="submit">Filter</button>
+</form>
 
 <h2>All Offers</h2>
 <div class="products">
-    <form method="get">
-        <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
-        <input type="text" name="location" placeholder="Location..." value="{{ request.GET.location }}">
-        <input type="number" name="min_price" placeholder="Min Price..." value="{{ request.GET.min_price }}">
-        <input type="number" name="max_price" placeholder="Max Price..." value="{{ request.GET.max_price }}">
-        <button type="submit">Search</button>
-    </form>
     {% if products %}
         {% for product in products %}
         <div class="product">
@@ -30,7 +48,7 @@
                 <img src="{{ product.media_files_set.first.path.url }}" alt="">
             </div>
             <hr class="dropdown-divider">
-            <h3><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+            <h3><a href="{% url 'product_detail' product.id %}">{{ product.piece }}</a></h3>
             <p>Price: ${{ product.price }}</p>
             <p>City: {{ product.city }}</p>
             <p>Sales: {{ product.sales }}</p>
