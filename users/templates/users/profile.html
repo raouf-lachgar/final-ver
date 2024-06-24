@@ -91,7 +91,7 @@
              <div class="card-img"><img src="{{product.media_files_set.first.path.url}}" alt=""></div>
              <hr class="dropdown-divider">
             <h3>{{ product.name }}</h3>
-            <p>Price: ${{ product.price }}</p>  
+            <p>Price: {{ product.price }} DA</p>  
             <p>City: {{ product.city }}</p>
             <a href="{% url 'edit_product' product.id %}">Edit</a> | <!-- Add Edit link -->
             <a href="{% url 'delete_product' product.id %}">Delete</a>
@@ -99,6 +99,28 @@
         {% endfor %}
     {% else %}
         <p>No products found. <a href="{% url 'submit_product' %}">Submit a product</a></p>
+    {% endif %}
+</div>
+<br>
+<hr class="dropdown-divider">
+<p style="font-weight: 500; font-size: 2vw; margin-left: 3vw; margin-top: 2vw">My Saved Products</p>
+<div class="products">
+    {% if saved_products %}
+        {% for saved_product in saved_products %}
+        <div class="product">
+             <div class="card-img"><img src="{{ saved_product.product.media_files_set.first.path.url }}" alt=""></div>
+             <hr class="dropdown-divider">
+            <h3>{{ saved_product.product.name }}</h3>
+            <p>Price: {{ saved_product.product.price }} DA</p>  
+            <p>City: {{ saved_product.product.city }}</p>
+            <form method="post" action="{% url 'remove_saved_product' saved_product.product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove</button>
+            </form>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No saved products found.</p>
     {% endif %}
 </div>
 {% endblock %}

@@ -1,11 +1,20 @@
 <!-- users/templates/users/product_detail.html -->
 {% extends "users/layout.html" %}
 {% block content %}
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li style="color: red;">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <h2>{{ product.piece }}</h2>
-            <p><strong>Price:</strong> ${{ product.price }}</p>
+            <p><strong>Model:</strong> {{ product.car_model }}</p>
+            <p><strong>Serie:</strong> {{ product.car_serie }}</p>
+            <p><strong>Price:</strong> {{ product.price }} DA</p>
             <p><strong>Phone:</strong> {{ product.phone_number }}</p>
             <p><strong>State:</strong> {{ product.get_state_display }}</p>
             <p><strong>City:</strong> {{ product.city }}</p>
@@ -36,6 +45,11 @@
                 {% csrf_token %}
                 {{ rating_form.as_p }}
                 <button type="submit" class="btn btn-primary" name="rating">Submit Rating</button>
+            </form>
+
+            <form method="post" action="{% url 'save_product' product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Save Product</button>
             </form>
             <a href="{% url 'index' %}" class="btn btn-secondary">Back to All Offers</a>
         </div>

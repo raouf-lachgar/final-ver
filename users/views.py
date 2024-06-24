@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 #no longer predifined djnago user ;)
-from .models import Product,custom_user,media_files,Wilaya,Rating,Comment,car_model,car_serie,piece
+from .models import Product,custom_user,media_files,Wilaya,Rating,Comment,car_model,car_serie,piece,SavedProduct
 from .forms import ProductForm, RatingForm
 from .filterForm import ProductFilter
 #external db for willayas
@@ -70,15 +70,40 @@ def index(request):
 
 
 
-
+def save_product(request, product_id):
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be logged in to save a product.')
+        return redirect('login')
+    
+    product = get_object_or_404(Product, id=product_id)
+    
+    if request.method == 'POST':
+        saved_product, created = SavedProduct.objects.get_or_create(user=request.user, product=product)
+        if created:
+            messages.success(request, 'Product saved successfully.')
+        else:
+            messages.info(request, 'Product already saved.')
+    
+    return redirect('product_detail', product_id=product_id)
 def profile_view(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
-    
-    user_products = Product.objects.filter(user=request.user).order_by('-created_at')
-    
-    return render(request, "users/profile.html", {'products': user_products})
 
+    user_products = Product.objects.filter(user=request.user).order_by('-created_at')
+    saved_products = SavedProduct.objects.filter(user=request.user).select_related('product')
+    
+    return render(request, "users/profile.html", {
+        'products': user_products,
+        'saved_products': saved_products
+    })
+def remove_saved_product(request, product_id):
+    if request.method == 'POST':
+        saved_product = get_object_or_404(SavedProduct, product_id=product_id, user=request.user)
+        saved_product.delete()
+        messages.success(request, 'Product removed from saved list.')
+    return redirect('profile')
+    
+    return HttpResponseRedirect(reverse('profile'))
 def delete_product_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if product.user != request.user:

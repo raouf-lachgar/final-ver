@@ -49,7 +49,7 @@
             </div>
             <hr class="dropdown-divider">
             <h3><a href="{% url 'product_detail' product.id %}">{{ product.piece }}</a></h3>
-            <p>Price: ${{ product.price }}</p>
+            <p>Price: {{ product.price }} DA</p>
             <p>City: {{ product.city }}</p>
             <p>Sales: {{ product.sales }}</p>
             <form method="POST" action="{% url 'buy_product' product.id %}">
