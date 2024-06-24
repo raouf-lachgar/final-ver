@@ -52,10 +52,6 @@
             <p>Price: {{ product.price }} DA</p>
             <p>City: {{ product.city }}</p>
             <p>Sales: {{ product.sales }}</p>
-            <form method="POST" action="{% url 'buy_product' product.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary" {% if product.quantity == 0 %}disabled{% endif %}>Buy</button>
-            </form>
         </div>
         {% endfor %}
     {% else %}

@@ -24,10 +24,12 @@
             <p><strong>Posted by:</strong> {{ product.user.username }}</p>
             <p><strong>Posted on:</strong> {{ product.created_at }}</p>
             <p><strong>Average Rating:</strong> {{ product.average_rating }}</p>
+            <a href="{% url 'buy_product' product.id %}" class="btn btn-success">Buy</a>
             <form method="post" action="{% url 'product_detail' product.id %}">
                 {% csrf_token %}
-                {{ comment_form.as_p }}
                 <button type="submit" class="btn btn-primary">Submit Comment</button>
+                <textarea name="comment" placeholder="Leave a comment" required></textarea>
+                
             </form>
             {% for comment in comments %}
             <div class="comment">
@@ -43,8 +45,9 @@
             
             <form method="post" action="{% url 'product_detail' product.id %}">
                 {% csrf_token %}
-                {{ rating_form.as_p }}
                 <button type="submit" class="btn btn-primary" name="rating">Submit Rating</button>
+                <input type="number" name="rating" placeholder="Rate this product (1-5)" min="1" max="5" required>
+                
             </form>
 
             <form method="post" action="{% url 'save_product' product.id %}">

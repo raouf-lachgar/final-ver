@@ -1,0 +1,13 @@
+{% extends "users/layout.html" %}
+{%load static%}
+{% block content %}
+<h2>Subscribe to submit a product</h2>
+    <p>To submit a product, you need to subscribe.</p>
+    <p>Please enter your card number and secret key to subscribe:</p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="number" name="" id="" placeholder="card number">
+      <input type="password" name="" id="" placeholder="secret number">
+      <button type="submit">Subscribe</button>
+  </form>
+{% endblock %}

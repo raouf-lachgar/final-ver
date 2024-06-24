@@ -14,7 +14,63 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
-            {{ form.as_p }}
+            <label for="name">Name:</label>
+            <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="car_model">Car Model:</label>
+            <select name="car_model" required>
+                {% for car_model in car_models %}
+                    <option value="{{ car_model.id }}">{{ car_model.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="car_serie">Car Serie:</label>
+            <select name="car_serie" required>
+                {% for car_serie in car_series %}
+                    <option value="{{ car_serie.id }}">{{ car_serie.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="piece">Piece:</label>
+            <select name="piece" required>
+                {% for piece in pieces %}
+                    <option value="{{ piece.id }}">{{ piece.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" name="price" required>
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" name="phone_number" required>
+        </div>
+        <div class="form-group">
+            <label for="state">State:</label>
+            <select name="state" required>
+                <option value="new">New</option>
+                <option value="used">Used</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <select name="city" required>
+                {% for wilaya in wilayas %}
+                    <option value="{{ wilaya.id }}">{{ wilaya.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea name="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" name="quantity" required>
         </div>
         <div class="form-group">
             <button class="btn btn-outline-success my-2 my-sm-0" id="profile-pic" type="button">Add Pictures</button>

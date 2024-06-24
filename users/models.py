@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 class custom_user(AbstractUser):
     phone_num = models.CharField(max_length=15)
     profile_pic = models.ImageField(upload_to='user_pic/')
+    subscribed = models.BooleanField(default=False)
     def __str__(self):
         return self.username
 class Wilaya(models.Model):
@@ -31,8 +32,10 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     quantity = models.PositiveIntegerField(default=0)
     sales = models.PositiveIntegerField(default=0)
-    total_rating = models.PositiveIntegerField(default=0)
+    total_rating = models.FloatField(default=0)
     rating_count = models.PositiveIntegerField(default=0)
+    def get_orders(self):
+        return Purchase.objects.filter(product=self)
 
     @property
     def average_rating(self):
@@ -66,7 +69,7 @@ User = get_user_model()
 
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     value = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
 
     @classmethod
@@ -77,14 +80,17 @@ class Rating(models.Model):
         if not created:
             # If the rating already exists, subtract the old value from total_rating
             product.total_rating -= rating.value
-            rating.value = value  # Update the value of the existing rating
 
+        rating.value = value  # Update the value of the existing rating
         rating.save()
+
         # Add the new value to total_rating
         product.total_rating += value
+
         # Ensure rating_count is only incremented if the rating was newly created
         if created:
             product.rating_count += 1
+
         product.save()
 
 
@@ -103,3 +109,22 @@ class SavedProduct(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+
+
+class Purchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=20)
+    address = models.CharField(max_length=255)
+    card_number = models.CharField(max_length=16)
+    secret_number = models.CharField(max_length=3)
+    STATUS_CHOICES = [
+        ('PROCESS', 'Under Process'),
+        ('SHIPPED', 'Shipped'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PROCESS')
+
+    def __str__(self):
+        return f"Purchase by {self.user.username} for {self.product.piece}"

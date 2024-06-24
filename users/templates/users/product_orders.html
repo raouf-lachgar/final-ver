@@ -1,0 +1,27 @@
+<!-- product_orders.html -->
+
+{% extends "users/layout.html" %}
+{% block content %}
+<h2>Orders for {{ product.name }}</h2>
+<div class="orders">
+    {% for order in orders %}
+    <div class="order">
+        <h3>Order #{{ order.id }}</h3>
+        <p><strong>Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+        <p><strong>Address:</strong> {{ order.address }}</p>
+        <p><strong>Phone Number:</strong> {{ order.phone_number }}</p>
+        <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+        {% if order.status == 'PROCESS' %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="purchase_id" value="{{ order.id }}">
+            <input type="hidden" name="action" value="shipped">
+            <button type="submit">Mark as Shipped</button>
+        </form>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No orders found for this product.</p>
+    {% endfor %}
+</div>
+{% endblock %}
